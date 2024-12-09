@@ -3,7 +3,33 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/test",
   "projectType": "application",
-  "tags": [],
-  "// targets": "to see all targets run: nx show project test --web",
-  "targets": {}
+  "targets": {
+    "build": {
+      "executor": "@naxodev/nx-cloudflare:next-build",
+      "options": {
+        "outputPath": "apps/test/.next"
+      },
+      "configurations": {
+        "production": {
+          "outputPath": "fapps/test/.next"
+        }
+      }
+    },
+    "serve": {
+      "executor": "@naxodev/nx-cloudflare:serve",
+      "options": {
+        "script": "apps/test/.next/server/index.js",
+        "port": 8787
+      }
+    },
+    "deploy": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "wrangler pages publish apps/test/.vercel/output/static"
+      },
+      "dependsOn": [
+        "build"
+      ]
+    }
+  }
 }
